@@ -116,20 +116,24 @@ export class FieldWatcher extends Component {
     private fusionItems(movedItem: Node, numbers: Vec2): void {
         const previousItem = this._fieldArray[numbers.y][numbers.x];
         if (previousItem === movedItem) return;
+        let newItem = movedItem;
         const oldNumbers = this.defineNumbers(movedItem);
         if (previousItem) {
             const previousItemScript = previousItem.getComponent(Item);
             const movedItemScript = movedItem?.getComponent(Item);
             if (previousItemScript.type === movedItemScript.type) {
                 previousItemScript.dropItem();
-                movedItemScript.transformationItem(ItemType.BonusBox);
+                movedItemScript.transformationItem(previousItemScript.type + 1);
             } else {
+                const numbersCopy = numbers;
                 numbers = this.findFreeCell(numbers, movedItem);
-                movedItemScript.transferItem(this.defineCellPosition(numbers));
+                previousItemScript.transferItem(this.defineCellPosition(numbers));
+                this._fieldArray[numbersCopy.y][numbersCopy.x] = newItem;
+                newItem = previousItem;
             }
         }
         this._fieldArray[oldNumbers.y][oldNumbers.x] = null;
-        this._fieldArray[numbers.y][numbers.x] = movedItem;
+        this._fieldArray[numbers.y][numbers.x] = newItem;
     }
 
     private chooseNumbers(): Vec2 {

@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, EventTouch, Vec3, Input, director, Vec2 } from 'cc';
+import { _decorator, Component, Node, EventTouch, Vec3, director, Animation } from 'cc';
 const { ccclass, property } = _decorator;
 
 import ItemType from './ItemType';
@@ -14,6 +14,7 @@ export class Item extends Component {
     public type: ItemType = ItemType.Flower1;
 
     private _isDragging: boolean = false;
+    private _stopDragging: boolean = false;
 
     public deltaX: number = 0;
     public deltaY: number = 0;
@@ -33,7 +34,7 @@ export class Item extends Component {
     }
 
     onInput(typeInput: InputType, event: EventTouch) {
-        if (!this._isDragging) return;
+        if (!this._isDragging || this._stopDragging) return;
         switch (typeInput) {
             case InputType.Move:
                 const deltaPos = new Vec3(event.getDeltaX(), event.getDeltaY(), 0);
@@ -56,6 +57,7 @@ export class Item extends Component {
     }
 
     onDown() {
+        if (this._stopDragging) return;
         this._isDragging = true;
         director.emit(Events.ItemChosen);
         this.node.setSiblingIndex(1000);
@@ -76,12 +78,15 @@ export class Item extends Component {
     }
 
     public transformationItem(type: ItemType) {
+        this._stopDragging = true;
         this.node.children[this.type].active = false;
         this.shine.active = true;
+        this.shine.getComponent(Animation).play();
         this.scheduleOnce(() => {
             this.shine.active = false;
             this.node.children[type].active = true;
             this.type = type;
+            this._stopDragging = false;
         }, 1);
     }
 

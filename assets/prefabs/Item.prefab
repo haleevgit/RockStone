@@ -204,7 +204,7 @@
     "__prefab": {
       "__id__": 8
     },
-    "playOnLoad": true,
+    "playOnLoad": false,
     "_clips": [
       {
         "__uuid__": "c3da9b39-02eb-47b3-931e-11092dabc415",
@@ -659,17 +659,6 @@
     "__prefab": {
       "__id__": 31
     },
-    "pictures": [
-      {
-        "__id__": 10
-      },
-      {
-        "__id__": 16
-      },
-      {
-        "__id__": 22
-      }
-    ],
     "shine": {
       "__id__": 2
     },
